@@ -1,6 +1,6 @@
 window.PROMPT_EMPIRE_CONFIG = {
   brand: "Prompt Empire™",
-  supportEmail: "support@example.com",
+  supportEmail: "tha.doll.house@icloud.com",
   currency: "USD",
   backendUrl: "",
   ownerApiKey: "",
