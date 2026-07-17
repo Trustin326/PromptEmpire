@@ -1,0 +1,40 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Owner Growth Dashboard | Prompt Empire</title><link rel="stylesheet" href="styles.css"></head><body>
+<div class="topbar">PROMPT EMPIRE™ PHASE 3 GROWTH ENGINE</div>
+<nav class="nav"><div class="brand"><span class="crown">♛</span><div><b>OWNER DASHBOARD</b><small>SALES + GROWTH OPERATIONS</small></div></div><div class="navlinks"><a href="index.html">STORE</a><a href="affiliate.html">AFFILIATES</a><a href="customer.html">CUSTOMERS</a></div></nav>
+<section class="section"><h1 class="section-title">BUSINESS COMMAND CENTER</h1><p class="section-sub">Sales, customers, affiliates, campaigns, conversion events, commissions, and delivery operations.</p>
+<div class="card" style="max-width:760px;margin:0 auto 25px"><label>Owner API Key</label><input id="key" class="search" style="width:100%;margin:8px 0" type="password" placeholder="OWNER_API_KEY"><button class="btn" id="load">LOAD LIVE DATA</button> <button class="btn secondary" id="runFollowups">SEND DUE FOLLOW-UPS</button><p id="status"></p></div>
+<div class="trust"><div><strong id="mSales">0</strong><br>VERIFIED SALES</div><div><strong id="mRevenue">$0</strong><br>GROSS REVENUE</div><div><strong id="mCustomers">0</strong><br>CUSTOMERS</div><div><strong id="mAffiliates">0</strong><br>ACTIVE AFFILIATES</div><div><strong id="mPending">$0</strong><br>PENDING COMMISSIONS</div></div>
+<div class="section" style="padding-left:0;padding-right:0">
+<h2>Campaign Performance</h2><div id="campaigns"></div>
+<h2>Top Products</h2><div id="products"></div>
+<h2>Recent Purchases</h2><div id="purchases"></div>
+<h2>Affiliate Leaderboard</h2><div id="affiliates"></div>
+<h2>Commissions</h2><div id="commissions"></div>
+<h2>Follow-Up Queue</h2><div id="followups"></div>
+<h2>Delivery Records</h2><div id="deliveries"></div>
+</div></section>
+<script src="config.js"></script><script>
+const fmt=n=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(Number(n||0));
+function table(rows,cols,actions=false){if(!rows.length)return"<p>No records yet.</p>";return `<div style="overflow:auto"><table style="width:100%;border-collapse:collapse;background:white"><tr>${cols.map(c=>`<th style="padding:10px;border:1px solid #ddd;text-align:left">${c}</th>`).join("")}${actions?"<th>Action</th>":""}</tr>${rows.slice(0,100).map(r=>`<tr>${cols.map(c=>`<td style="padding:10px;border:1px solid #ddd">${String(r[c]??"")}</td>`).join("")}${actions?(r.status==="pending"?`<td><button onclick="markPaid('${r.commission_id}')">Mark paid</button></td>`:"<td></td>"):""}</tr>`).join("")}</table></div>`}
+async function owner(action="ownerData",body=null){
+ if(!PROMPT_EMPIRE_CONFIG.backendUrl)throw new Error("Backend URL missing in config.js");
+ if(body){return (await fetch(PROMPT_EMPIRE_CONFIG.backendUrl+"?action="+action,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({...body,owner_key:key.value})})).json()}
+ const u=new URL(PROMPT_EMPIRE_CONFIG.backendUrl);u.searchParams.set("action",action);u.searchParams.set("owner_key",key.value);return (await fetch(u)).json();
+}
+load.onclick=async()=>{try{
+ status.textContent="Loading…";localStorage.setItem("pe_owner_key",key.value);const res=await owner();if(!res.ok)throw new Error(res.error||"Load failed");const d=res.data;
+ const ps=d.Purchases.filter(x=>x.status==="paid"), cs=d.Customers, as=d.Affiliates, com=d.Commissions, del=d.Deliveries, cmp=d.Campaigns, fu=d.FollowUps;
+ mSales.textContent=ps.length;mRevenue.textContent=fmt(ps.reduce((a,x)=>a+Number(x.amount_total||0),0));mCustomers.textContent=cs.length;mAffiliates.textContent=as.filter(x=>x.status==="active").length;mPending.textContent=fmt(com.filter(x=>x.status==="pending").reduce((a,x)=>a+Number(x.commission_amount||0),0));
+ campaigns.innerHTML=table(cmp,["campaign_id","name","channel","status","clicks","sales","revenue"]);
+ const by={};ps.forEach(x=>{by[x.product_id]??={product_id:x.product_id,sales:0,revenue:0};by[x.product_id].sales++;by[x.product_id].revenue+=Number(x.amount_total||0)});products.innerHTML=table(Object.values(by).sort((a,b)=>b.revenue-a.revenue),["product_id","sales","revenue"]);
+ purchases.innerHTML=table(ps,["purchased_at","customer_email","product_id","amount_total","affiliate_id","campaign_id","coupon_code","status"]);
+ affiliates.innerHTML=table(as.sort((a,b)=>Number(b.verified_sales||0)-Number(a.verified_sales||0)),["affiliate_id","name","clicks","verified_sales","lifetime_commission","status"]);
+ commissions.innerHTML=table(com,["created_at","affiliate_id","gross_amount","commission_rate","commission_amount","status"],true);
+ followups.innerHTML=table(fu,["scheduled_at","customer_email","type","product_id","status","notes"]);
+ deliveries.innerHTML=table(del,["delivered_at","customer_email","product_id","status","notes"]);
+ status.textContent="Live growth data loaded.";
+}catch(e){status.textContent=e.message}}
+async function markPaid(id){const d=await owner("markCommissionPaid",{commission_id:id});if(!d.ok)alert(d.error||"Failed");else load.click()}
+runFollowups.onclick=async()=>{const d=await owner("sendDueFollowUps",{});status.textContent=d.ok?`Sent ${d.sent} due follow-up email(s).`:(d.error||"Failed")}
+key.value=localStorage.getItem("pe_owner_key")||"";
+</script><script src="growth.js"></script></body></html>

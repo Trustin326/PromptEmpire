@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prompt Empire™ | Premium AI Prompt Packs</title>
+<meta name="description" content="Premium AI prompt packs for entrepreneurs, creators, and business owners.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="topbar">PREMIUM AI PROMPT PACKS TO BUILD YOUR BRAND, SCALE YOUR BUSINESS & CREATE YOUR LEGACY.</div>
+<nav class="nav">
+  <div class="brand"><span class="crown">♛</span><div><b>PROMPT EMPIRE</b><small>AI PROMPT PACKS</small></div></div>
+  <div class="navlinks"><a href="#home">HOME</a><a href="#shop">SHOP ALL</a><a href="#bundles">BUNDLES</a><a href="#about">ABOUT</a><a href="affiliate.html">AFFILIATES</a><a href="#contact">CONTACT</a></div>
+  <div class="actions"><button class="iconbtn" onclick="document.getElementById('search').focus()">⌕</button><button class="iconbtn" id="cartBtn">👜<sup id="cartCount">0</sup></button></div>
+</nav>
+<header class="hero" id="home">
+  <div class="hero-panel">
+    <span class="eyebrow">PREMIUM AI PROMPT PACKS</span>
+    <h1>CREATE YOUR VISION.<br>BUILD YOUR BRAND.<br>CHANGE YOUR LEGACY.</h1>
+    <p>Powerful, strategic prompt packs for entrepreneurs, creators, and business owners who are ready to turn ideas into action.</p>
+    <div class="hero-buttons"><a class="btn" href="#shop">SHOP ALL PACKS</a><a class="btn secondary" href="#bundles">VIEW BUNDLES</a></div>
+  </div>
+  <div class="hero-image" aria-label="Luxury silver business workspace"></div>
+  <div class="hero-quote"><div class="quote-card"><div style="font-size:44px">♛</div><h3>YOUR BUSINESS.<br>YOUR RULES.<br>YOUR FREEDOM.<br>YOUR LEGACY.</h3><p>Intentional tools for disciplined execution.</p></div></div>
+</header>
+<section class="trust"><div>◇ 25+ PREMIUM PACKS</div><div>↗ BUILT FOR ACTION</div><div>♙ FOR ENTREPRENEURS</div><div>✦ GROW & CREATE</div><div>∞ LIFETIME VALUE</div></section>
+
+<section class="section" id="shop">
+<h2 class="section-title">THE PROMPT EMPIRE COLLECTION</h2>
+<p class="section-sub">Purpose-built prompt systems organized by business goal, industry, and growth stage.</p>
+<input id="search" class="search" placeholder="Search prompt packs...">
+<div class="filters" id="filters"></div>
+<div class="grid" id="productGrid"></div>
+</section>
+
+<section class="band" id="bundles"><h2>BUILD MORE. MOVE FASTER.</h2><p>Bundle your best tools into one focused operating system.</p><a class="btn" href="#shop" onclick="setTimeout(()=>{document.querySelector('[data-cat=&quot;Bundle&quot;]').click()},50)">SHOP BUNDLES</a></section>
+
+<section class="section" id="about"><h2 class="section-title">PROMPTS BUILT FOR EXECUTION</h2><p class="section-sub">Each complete pack includes 100 structured prompts written to help you plan, communicate, create, analyze, and improve real work. Replace bracketed context, review the output, and use your judgment before publishing or acting.</p></section>
+
+<footer class="footer" id="contact"><div><div class="brand"><span class="crown">♛</span><div><b>PROMPT EMPIRE</b><small>AI PROMPT PACKS</small></div></div><p>Premium digital prompt systems for entrepreneurs, creators, professionals, and growing brands.</p></div><div><strong>SHOP</strong><a href="#shop">All Packs</a><a href="#bundles">Bundles</a><a href="affiliate.html">Affiliates</a></div><div><strong>POLICIES</strong><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a><a href="support.html">Support</a><a href="reviews.html">Reviews</a><a href="operations.html">Operations</a><a href="mailto:support@example.com">Email Support</a></div></footer>
+
+<aside class="drawer" id="cartDrawer"><div class="drawer-head"><h2>YOUR BAG</h2><button class="iconbtn" id="closeCart">×</button></div><div id="cartItems"></div><h3>Total: <span id="cartTotal">$0.00</span></h3><button class="btn" style="width:100%" onclick="checkout()">CHECKOUT</button><p class="notice">Stripe checkout links are configured in <code>config.js</code>.</p></aside>
+
+<div class="modal" id="productModal"><div class="modal-card"><div style="text-align:right"><button class="iconbtn" id="closeModal">×</button></div><div id="modalContent"></div></div></div>
+<script src="config.js"></script><script src="data.js"></script><script src="app.js"></script>
+<script src="growth.js"></script></body></html>

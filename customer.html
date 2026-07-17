@@ -1,0 +1,21 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Customer Purchase History | Prompt Empire</title><link rel="stylesheet" href="styles.css"></head><body>
+<div class="topbar">PROMPT EMPIRE™ CUSTOMER CENTER</div>
+<nav class="nav"><div class="brand"><span class="crown">♛</span><div><b>PROMPT EMPIRE</b><small>CUSTOMER CENTER</small></div></div><div class="navlinks"><a href="index.html">STORE</a><a href="affiliate.html">AFFILIATES</a></div></nav>
+<section class="section" style="max-width:900px;margin:auto"><h1 class="section-title">YOUR PURCHASE HISTORY</h1><p class="section-sub">Enter the email used at checkout to view recorded purchases and customer status.</p>
+<div class="card"><input id="email" class="search" style="width:100%;margin:0 0 12px" type="email" placeholder="you@example.com"><button class="btn" id="load">VIEW PURCHASE HISTORY</button><p id="status"></p></div>
+<div id="summary" class="trust" style="display:none;margin-top:25px"><div><strong id="count">0</strong><br>PURCHASES</div><div><strong id="ltv">$0</strong><br>LIFETIME VALUE</div><div><strong id="segment">NEW</strong><br>STATUS</div><div><strong id="last">—</strong><br>LAST PURCHASE</div><div><strong id="next">EXPLORE</strong><br>NEXT STEP</div></div>
+<div id="history" style="margin-top:25px"></div>
+</section>
+<script src="config.js"></script><script>
+const fmt=n=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(Number(n||0));
+load.onclick=async()=>{try{
+ if(!PROMPT_EMPIRE_CONFIG.backendUrl)throw new Error("Backend URL is not configured.");
+ const u=new URL(PROMPT_EMPIRE_CONFIG.backendUrl);u.searchParams.set("action","customerHistory");u.searchParams.set("email",email.value);
+ const d=await (await fetch(u)).json();if(!d.ok)throw new Error(d.error||"Could not load history");
+ if(!d.customer){status.textContent="No verified purchases found for that email.";summary.style.display="none";history.innerHTML="";return}
+ status.textContent="Purchase history loaded.";summary.style.display="grid";
+ count.textContent=d.customer.purchase_count;ltv.textContent=fmt(d.customer.lifetime_value);segment.textContent=(d.customer.segment||"new").toUpperCase();
+ last.textContent=d.purchases[0]?String(d.purchases[0].purchased_at).slice(0,10):"—";next.textContent=d.customer.segment==="VIP"?"VAULT":d.customer.segment==="repeat"?"BUNDLE":"EXPLORE";
+ history.innerHTML=d.purchases.map(p=>`<div class="card" style="margin-bottom:12px"><strong>${p.product_id}</strong><p>${p.purchased_at} · ${fmt(p.amount_total)} · ${p.status}</p></div>`).join("");
+}catch(e){status.textContent=e.message}}
+</script><script src="growth.js"></script></body></html>
